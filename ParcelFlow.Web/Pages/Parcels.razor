@@ -1,0 +1,173 @@
+@page "/parcels"
+@inject ParcelService ParcelSvc
+
+<h1>Manage Parcels</h1>
+
+<button @onclick="ShowCreateForm">+ Add New Parcel</button>
+
+@if (_showForm)
+{
+    <div class="card" style="margin-top:12px;">
+        <h3>@(_editing.ParcelID == 0 ? "New Parcel" : $"Edit Parcel #{_editing.ParcelID}")</h3>
+        <EditForm Model="_editing" OnValidSubmit="SaveParcel">
+            <div>
+                <label>Customer</label><br />
+                <select @bind="_editing.CustomerID">
+                    @foreach (var c in _customers)
+                    {
+                        <option value="@c.CustomerID">@c.CustomerName (@c.City)</option>
+                    }
+                </select>
+            </div>
+            <div>
+                <label>Service Type</label><br />
+                <select @bind="_editing.ServiceID">
+                    @foreach (var s in _services)
+                    {
+                        <option value="@s.ServiceID">@s.ServiceName</option>
+                    }
+                </select>
+            </div>
+            <div>
+                <label>Distribution Centre</label><br />
+                <select @bind="_editing.DistributionCentre">
+                    @foreach (var c in _centres)
+                    {
+                        <option value="@c.CentreCode">@c.CentreName</option>
+                    }
+                </select>
+            </div>
+            <div>
+                <label>Origin</label><br />
+                <input @bind="_editing.Origin" />
+            </div>
+            <div>
+                <label>Destination</label><br />
+                <input @bind="_editing.Destination" />
+            </div>
+            <div>
+                <label>Weight (kg)</label><br />
+                <input type="number" step="0.01" @bind="_editing.Weight" />
+            </div>
+            <div>
+                <label>Delivery Fee (R)</label><br />
+                <input type="number" step="0.01" @bind="_editing.DeliveryFee" />
+            </div>
+            <div>
+                <label>Dispatch Date</label><br />
+                <input type="date" @bind="_editing.DispatchDate" />
+            </div>
+            <div>
+                <label>Status</label><br />
+                <select @bind="_editing.CurrentStatus">
+                    <option>In Transit</option>
+                    <option>Delivered</option>
+                    <option>Delayed</option>
+                </select>
+            </div>
+            <br />
+            <button type="submit">Save</button>
+            <button type="button" @onclick="CancelForm">Cancel</button>
+        </EditForm>
+    </div>
+}
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th><th>Customer</th><th>Service</th><th>Centre</th>
+            <th>Route</th><th>Fee</th><th>Status</th><th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in _parcels)
+        {
+            <tr>
+                <td>@p.ParcelID</td>
+                <td>@p.Customer?.CustomerName</td>
+                <td>@p.ServiceType?.ServiceName</td>
+                <td>@p.DistributionCentre</td>
+                <td>@p.Origin → @p.Destination</td>
+                <td>R@p.DeliveryFee</td>
+                <td><span class="status-@(p.CurrentStatus.Replace(" ", ""))">@p.CurrentStatus</span></td>
+                <td>
+                    <button @onclick="() => EditParcel(p)">Edit</button>
+                    <button @onclick="() => DeleteParcel(p.ParcelID)">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<Parcel> _parcels = new();
+    private List<Customer> _customers = new();
+    private List<ServiceType> _services = new();
+    private List<DistributionCentre> _centres = new();
+    private Parcel _editing = new();
+    private bool _showForm;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAll();
+    }
+
+    private async Task LoadAll()
+    {
+        _parcels = await ParcelSvc.GetRecentParcelsAsync(200);
+        _customers = await ParcelSvc.GetCustomersAsync();
+        _services = await ParcelSvc.GetServiceTypesAsync();
+        _centres = await ParcelSvc.GetCentresAsync();
+    }
+
+    private void ShowCreateForm()
+    {
+        _editing = new Parcel
+        {
+            DispatchDate = DateTime.Today,
+            CurrentStatus = "In Transit",
+            CustomerID = _customers.FirstOrDefault()?.CustomerID ?? 0,
+            ServiceID = _services.FirstOrDefault()?.ServiceID ?? 0,
+            DistributionCentre = _centres.FirstOrDefault()?.CentreCode ?? "JHB"
+        };
+        _showForm = true;
+    }
+
+    private void EditParcel(Parcel p)
+    {
+        _editing = new Parcel
+        {
+            ParcelID = p.ParcelID,
+            CustomerID = p.CustomerID,
+            ServiceID = p.ServiceID,
+            DistributionCentre = p.DistributionCentre,
+            Origin = p.Origin,
+            Destination = p.Destination,
+            Weight = p.Weight,
+            DeliveryFee = p.DeliveryFee,
+            DispatchDate = p.DispatchDate,
+            DeliveryDate = p.DeliveryDate,
+            CurrentStatus = p.CurrentStatus
+        };
+        _showForm = true;
+    }
+
+    private async Task SaveParcel()
+    {
+        if (_editing.ParcelID == 0)
+            await ParcelSvc.CreateParcelAsync(_editing);
+        else
+            await ParcelSvc.UpdateParcelAsync(_editing);
+
+        _showForm = false;
+        await LoadAll();
+    }
+
+    private async Task DeleteParcel(int id)
+    {
+        await ParcelSvc.DeleteParcelAsync(id);
+        await LoadAll();
+    }
+
+    private void CancelForm() => _showForm = false;
+}

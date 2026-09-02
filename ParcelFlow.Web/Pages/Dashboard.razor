@@ -1,0 +1,65 @@
+@page "/dashboard"
+@inject DashboardService DashboardSvc
+@inject IJSRuntime JS
+
+<h1>Dashboard</h1>
+<p>Live aggregation queries against the operational data — the same roll-up, drill-down, and slice logic used in <code>sql/08_bi_olap</code>.</p>
+
+<div class="card-grid">
+    <div class="card">
+        <h3>Revenue by Distribution Centre</h3>
+        <canvas id="revenueByCentreChart" height="200"></canvas>
+    </div>
+    <div class="card">
+        <h3>Delivery Status Breakdown</h3>
+        <canvas id="statusChart" height="200"></canvas>
+    </div>
+</div>
+
+<div class="card" style="margin-top:16px;">
+    <h3>Revenue by Centre and Service Type</h3>
+    <table>
+        <thead><tr><th>Centre</th><th>Service</th><th># Parcels</th><th>Revenue</th></tr></thead>
+        <tbody>
+            @foreach (var row in _centreServiceRevenue)
+            {
+                <tr>
+                    <td>@row.CentreName</td>
+                    <td>@row.ServiceName</td>
+                    <td>@row.NumberOfParcels</td>
+                    <td>R@row.TotalRevenue.ToString("N2")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private List<CentreRevenue> _centreRevenue = new();
+    private List<CentreServiceRevenue> _centreServiceRevenue = new();
+    private List<StatusBreakdown> _statusBreakdown = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _centreRevenue = await DashboardSvc.GetRevenueByCentreAsync();
+        _centreServiceRevenue = await DashboardSvc.GetRevenueByCentreAndServiceAsync();
+        _statusBreakdown = await DashboardSvc.GetStatusBreakdownAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("parcelFlowCharts.renderBar",
+                "revenueByCentreChart",
+                _centreRevenue.Select(r => r.CentreName).ToArray(),
+                _centreRevenue.Select(r => r.TotalRevenue).ToArray(),
+                "Total Revenue (R)");
+
+            await JS.InvokeVoidAsync("parcelFlowCharts.renderPie",
+                "statusChart",
+                _statusBreakdown.Select(s => s.Status).ToArray(),
+                _statusBreakdown.Select(s => (double)s.Count).ToArray());
+        }
+    }
+}

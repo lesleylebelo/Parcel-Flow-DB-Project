@@ -1,0 +1,67 @@
+@page "/track"
+@inject ParcelService ParcelSvc
+
+<h1>Track a Parcel</h1>
+
+<div>
+    <input type="number" @bind="_searchId" placeholder="Enter Parcel ID (e.g. 1050)" />
+    <button @onclick="Search">Search</button>
+</div>
+
+@if (_searched && _parcel == null)
+{
+    <p style="color:#b42318; margin-top:12px;">No parcel found with ID @_searchId.</p>
+}
+
+@if (_parcel != null)
+{
+    <div class="card" style="margin-top:16px;">
+        <h3>Parcel #@_parcel.ParcelID</h3>
+        <p><strong>Customer:</strong> @_parcel.Customer?.CustomerName</p>
+        <p><strong>Service:</strong> @_parcel.ServiceType?.ServiceName</p>
+        <p><strong>Route:</strong> @_parcel.Origin → @_parcel.Destination</p>
+        <p><strong>Distribution Centre:</strong> @_parcel.DistributionCentre</p>
+        <p><strong>Dispatched:</strong> @_parcel.DispatchDate.ToString("dd MMM yyyy")</p>
+        <p>
+            <strong>Status:</strong>
+            <span class="status-@(_parcel.CurrentStatus.Replace(" ", ""))">@_parcel.CurrentStatus</span>
+        </p>
+
+        <h4>Status History</h4>
+        @if (_history.Count == 0)
+        {
+            <p><em>No history recorded yet.</em></p>
+        }
+        else
+        {
+            <table>
+                <thead><tr><th>Status</th><th>Changed At</th></tr></thead>
+                <tbody>
+                    @foreach (var h in _history)
+                    {
+                        <tr>
+                            <td>@h.Status</td>
+                            <td>@h.ChangedAt.ToString("dd MMM yyyy HH:mm")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+}
+
+@code {
+    private int _searchId;
+    private bool _searched;
+    private Parcel? _parcel;
+    private List<ParcelStatusHistory> _history = new();
+
+    private async Task Search()
+    {
+        _searched = true;
+        _parcel = await ParcelSvc.GetParcelAsync(_searchId);
+        _history = _parcel != null
+            ? await ParcelSvc.GetStatusHistoryAsync(_searchId)
+            : new List<ParcelStatusHistory>();
+    }
+}
