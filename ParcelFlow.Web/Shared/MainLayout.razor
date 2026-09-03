@@ -1,13 +1,76 @@
 @inherits LayoutComponentBase
+@inject NavigationManager Nav
 
-<div class="navbar">
-    <span class="brand">📦 ParcelFlow</span>
-    <a href="/">Home</a>
-    <a href="/track">Track a Parcel</a>
-    <a href="/parcels">Manage Parcels</a>
-    <a href="/dashboard">Dashboard</a>
+<div class="app-shell">
+    <aside class="sidebar @(_sidebarOpen ? "open" : "")">
+        <div class="sidebar-brand">
+            <i class="bi bi-box-seam"></i>
+            <span>ParcelFlow</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/dashboard" class="@ActiveClass("/dashboard")">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+            <a href="/parcels" class="@ActiveClass("/parcels")">
+                <i class="bi bi-box2"></i> Parcels
+            </a>
+            <a href="/track" class="@ActiveClass("/track")">
+                <i class="bi bi-geo-alt"></i> Track a Parcel
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            ParcelFlow Operations Platform
+        </div>
+    </aside>
+
+    <div class="main-area">
+        <header class="topbar">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <button class="sidebar-toggle" @onclick="ToggleSidebar" aria-label="Toggle navigation">
+                    <i class="bi bi-list"></i>
+                </button>
+                <div class="topbar-title-group">
+                    <span class="topbar-title">@PageTitle</span>
+                    <span class="topbar-breadcrumb">ParcelFlow / @PageTitle</span>
+                </div>
+            </div>
+            <div class="topbar-actions">
+                <a href="/track" class="btn btn-secondary btn-sm">
+                    <i class="bi bi-search"></i> Track a Parcel
+                </a>
+            </div>
+        </header>
+
+        <main class="content-area">
+            @Body
+        </main>
+    </div>
 </div>
 
-<div class="page-content">
-    @Body
-</div>
+@code {
+    private bool _sidebarOpen;
+
+    private string PageTitle
+    {
+        get
+        {
+            var path = Nav.ToBaseRelativePath(Nav.Uri).ToLowerInvariant();
+            return path switch
+            {
+                "" => "Home",
+                "dashboard" => "Dashboard",
+                "parcels" => "Parcels",
+                "track" => "Track a Parcel",
+                _ => "ParcelFlow"
+            };
+        }
+    }
+
+    private string ActiveClass(string href)
+    {
+        var current = "/" + Nav.ToBaseRelativePath(Nav.Uri).ToLowerInvariant().TrimEnd('/');
+        return current == href ? "active" : "";
+    }
+
+    private void ToggleSidebar() => _sidebarOpen = !_sidebarOpen;
+}

@@ -4404,11 +4404,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Mo\\Videos\\ParcelFlow-DB-Project\\ParcelFlow.Web\\ParcelFlow.Web.csproj",
+      "projectUniqueName": "c:\\Users\\Mo\\Videos\\ParcelFlow-DB-Project\\ParcelFlow.Web\\ParcelFlow.Web.csproj",
       "projectName": "ParcelFlow.Web",
-      "projectPath": "C:\\Users\\Mo\\Videos\\ParcelFlow-DB-Project\\ParcelFlow.Web\\ParcelFlow.Web.csproj",
+      "projectPath": "c:\\Users\\Mo\\Videos\\ParcelFlow-DB-Project\\ParcelFlow.Web\\ParcelFlow.Web.csproj",
       "packagesPath": "C:\\Users\\Mo\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Mo\\Videos\\ParcelFlow-DB-Project\\ParcelFlow.Web\\obj\\",
+      "outputPath": "c:\\Users\\Mo\\Videos\\ParcelFlow-DB-Project\\ParcelFlow.Web\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Mo\\AppData\\Roaming\\NuGet\\NuGet.Config"

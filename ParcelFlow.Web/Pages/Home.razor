@@ -1,22 +1,40 @@
 @page "/"
+@layout ParcelFlow.Web.Shared.LandingLayout
 
-<h1>ParcelFlow</h1>
-<p>Courier operations portal for a fictional multi-region delivery company (Johannesburg, Cape Town, Durban).</p>
+<section class="landing-hero">
+    <h1>ParcelFlow</h1>
+    <p>Smart parcel management. Simplified logistics. Track shipments, manage deliveries, and monitor operations across every regional distribution centre from one platform.</p>
+    <div class="landing-cta-row">
+        <a href="/track" class="btn btn-primary"><i class="bi bi-geo-alt"></i> Track a Parcel</a>
+        <a href="/dashboard" class="btn btn-secondary"><i class="bi bi-speedometer2"></i> Manage Shipments</a>
+    </div>
+</section>
 
-<div class="card-grid">
-    <div class="card">
-        <h3>📍 Track a Parcel</h3>
-        <p>Look up a parcel by ID and see its full status history.</p>
-        <a href="/track"><button>Track a Parcel</button></a>
+<section class="landing-features">
+    <div class="card-grid">
+        <div class="feature-card">
+            <i class="bi bi-box2"></i>
+            <h3>Parcel Management</h3>
+            <p>Create, update, and manage parcel records across all distribution centres from a single console.</p>
+        </div>
+        <div class="feature-card">
+            <i class="bi bi-geo-alt"></i>
+            <h3>Shipment Tracking</h3>
+            <p>Look up any parcel by ID and follow its full status history from dispatch to delivery.</p>
+        </div>
+        <div class="feature-card">
+            <i class="bi bi-truck"></i>
+            <h3>Delivery Management</h3>
+            <p>Monitor delivery status in real time — In Transit, Delivered, or Delayed — across every region.</p>
+        </div>
+        <div class="feature-card">
+            <i class="bi bi-bar-chart-line"></i>
+            <h3>Logistics Reporting</h3>
+            <p>Revenue and volume breakdowns by distribution centre and service type, built on live operational data.</p>
+        </div>
     </div>
-    <div class="card">
-        <h3>🗂️ Manage Parcels</h3>
-        <p>Browse, add, edit, and remove parcel records.</p>
-        <a href="/parcels"><button>Manage Parcels</button></a>
-    </div>
-    <div class="card">
-        <h3>📊 Dashboard</h3>
-        <p>Revenue by centre, revenue by service type, and delivery status breakdown.</p>
-        <a href="/dashboard"><button>Open Dashboard</button></a>
-    </div>
-</div>
+</section>
+
+<footer class="landing-footer">
+    ParcelFlow Operations Platform &middot; © @DateTime.Now.Year
+</footer>

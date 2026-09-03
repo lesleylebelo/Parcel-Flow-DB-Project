@@ -11,7 +11,7 @@ window.parcelFlowCharts = {
             type: 'bar',
             data: {
                 labels: labels,
-                datasets: [{ label: label, data: values, backgroundColor: '#1e3a5f' }]
+                datasets: [{ label: label, data: values, backgroundColor: '#1976D2', borderRadius: 4, maxBarThickness: 56 }]
             },
             options: { responsive: true, plugins: { legend: { display: false } } }
         });
@@ -24,9 +24,9 @@ window.parcelFlowCharts = {
             type: 'pie',
             data: {
                 labels: labels,
-                datasets: [{ data: values, backgroundColor: ['#1a7f37', '#b25e00', '#b42318'] }]
+                datasets: [{ data: values, backgroundColor: ['#1A7F37', '#1769AA', '#B42318'] }]
             },
-            options: { responsive: true }
+            options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } } } }
         });
     },
 

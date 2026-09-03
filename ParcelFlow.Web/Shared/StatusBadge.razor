@@ -1,0 +1,27 @@
+@* Maps a parcel status string to a consistent colour-coded badge used
+   across the tracking page, parcel table, and dashboard. *@
+
+<span class="badge @CssClass">
+    <i class="bi @IconClass"></i>
+    @Status
+</span>
+
+@code {
+    [Parameter] public string Status { get; set; } = "";
+
+    private string CssClass => Status switch
+    {
+        "Delivered" => "badge-delivered",
+        "In Transit" => "badge-transit",
+        "Delayed" => "badge-delayed",
+        _ => "badge-pending"
+    };
+
+    private string IconClass => Status switch
+    {
+        "Delivered" => "bi-check-circle-fill",
+        "In Transit" => "bi-truck",
+        "Delayed" => "bi-exclamation-triangle-fill",
+        _ => "bi-hourglass-split"
+    };
+}

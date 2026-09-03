@@ -1,103 +1,136 @@
 @page "/parcels"
 @inject ParcelService ParcelSvc
 
-<h1>Manage Parcels</h1>
-
-<button @onclick="ShowCreateForm">+ Add New Parcel</button>
+<div class="section" style="display:flex; align-items:center; justify-content:space-between;">
+    <div>
+        <h1>Parcels</h1>
+        <p style="color:var(--pf-grey-med); margin:0;">Manage parcel records across all distribution centres.</p>
+    </div>
+    <button class="btn btn-primary" @onclick="ShowCreateForm"><i class="bi bi-plus-lg"></i> New Parcel</button>
+</div>
 
 @if (_showForm)
 {
-    <div class="card" style="margin-top:12px;">
-        <h3>@(_editing.ParcelID == 0 ? "New Parcel" : $"Edit Parcel #{_editing.ParcelID}")</h3>
+    <div class="card section">
+        <h3 style="margin-bottom:14px;">@(_editing.ParcelID == 0 ? "New Parcel" : $"Edit Parcel #{_editing.ParcelID}")</h3>
         <EditForm Model="_editing" OnValidSubmit="SaveParcel">
-            <div>
-                <label>Customer</label><br />
-                <select @bind="_editing.CustomerID">
-                    @foreach (var c in _customers)
-                    {
-                        <option value="@c.CustomerID">@c.CustomerName (@c.City)</option>
-                    }
-                </select>
+
+            <div class="form-section">
+                <div class="form-section-title">Shipment Information</div>
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label>Customer</label>
+                        <select @bind="_editing.CustomerID">
+                            @foreach (var c in _customers)
+                            {
+                                <option value="@c.CustomerID">@c.CustomerName (@c.City)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label>Service Type</label>
+                        <select @bind="_editing.ServiceID">
+                            @foreach (var s in _services)
+                            {
+                                <option value="@s.ServiceID">@s.ServiceName</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label>Distribution Centre</label>
+                        <select @bind="_editing.DistributionCentre">
+                            @foreach (var c in _centres)
+                            {
+                                <option value="@c.CentreCode">@c.CentreName</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label>Status</label>
+                        <select @bind="_editing.CurrentStatus">
+                            <option>In Transit</option>
+                            <option>Delivered</option>
+                            <option>Delayed</option>
+                        </select>
+                    </div>
+                </div>
             </div>
-            <div>
-                <label>Service Type</label><br />
-                <select @bind="_editing.ServiceID">
-                    @foreach (var s in _services)
-                    {
-                        <option value="@s.ServiceID">@s.ServiceName</option>
-                    }
-                </select>
+
+            <div class="form-section">
+                <div class="form-section-title">Route</div>
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label>Origin</label>
+                        <input @bind="_editing.Origin" />
+                    </div>
+                    <div class="form-field">
+                        <label>Destination</label>
+                        <input @bind="_editing.Destination" />
+                    </div>
+                </div>
             </div>
-            <div>
-                <label>Distribution Centre</label><br />
-                <select @bind="_editing.DistributionCentre">
-                    @foreach (var c in _centres)
-                    {
-                        <option value="@c.CentreCode">@c.CentreName</option>
-                    }
-                </select>
+
+            <div class="form-section">
+                <div class="form-section-title">Package &amp; Billing</div>
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label>Weight (kg)</label>
+                        <input type="number" step="0.01" @bind="_editing.Weight" />
+                    </div>
+                    <div class="form-field">
+                        <label>Delivery Fee (R)</label>
+                        <input type="number" step="0.01" @bind="_editing.DeliveryFee" />
+                    </div>
+                    <div class="form-field">
+                        <label>Dispatch Date</label>
+                        <input type="date" @bind="_editing.DispatchDate" />
+                    </div>
+                </div>
             </div>
-            <div>
-                <label>Origin</label><br />
-                <input @bind="_editing.Origin" />
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Save Parcel</button>
+                <button type="button" class="btn btn-secondary" @onclick="CancelForm">Cancel</button>
             </div>
-            <div>
-                <label>Destination</label><br />
-                <input @bind="_editing.Destination" />
-            </div>
-            <div>
-                <label>Weight (kg)</label><br />
-                <input type="number" step="0.01" @bind="_editing.Weight" />
-            </div>
-            <div>
-                <label>Delivery Fee (R)</label><br />
-                <input type="number" step="0.01" @bind="_editing.DeliveryFee" />
-            </div>
-            <div>
-                <label>Dispatch Date</label><br />
-                <input type="date" @bind="_editing.DispatchDate" />
-            </div>
-            <div>
-                <label>Status</label><br />
-                <select @bind="_editing.CurrentStatus">
-                    <option>In Transit</option>
-                    <option>Delivered</option>
-                    <option>Delayed</option>
-                </select>
-            </div>
-            <br />
-            <button type="submit">Save</button>
-            <button type="button" @onclick="CancelForm">Cancel</button>
         </EditForm>
     </div>
 }
 
-<table>
-    <thead>
-        <tr>
-            <th>ID</th><th>Customer</th><th>Service</th><th>Centre</th>
-            <th>Route</th><th>Fee</th><th>Status</th><th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var p in _parcels)
-        {
+<div class="table-card">
+    <div class="table-toolbar">
+        <div class="search-input">
+            <i class="bi bi-search"></i>
+            <input placeholder="Search by ID, customer, or status..." @bind="_searchTerm" @bind:event="oninput" />
+        </div>
+        <span style="font-size:0.8rem; color:var(--pf-grey-med);">@FilteredParcels.Count() of @_parcels.Count parcels</span>
+    </div>
+    <table>
+        <thead>
             <tr>
-                <td>@p.ParcelID</td>
-                <td>@p.Customer?.CustomerName</td>
-                <td>@p.ServiceType?.ServiceName</td>
-                <td>@p.DistributionCentre</td>
-                <td>@p.Origin → @p.Destination</td>
-                <td>R@p.DeliveryFee</td>
-                <td><span class="status-@(p.CurrentStatus.Replace(" ", ""))">@p.CurrentStatus</span></td>
-                <td>
-                    <button @onclick="() => EditParcel(p)">Edit</button>
-                    <button @onclick="() => DeleteParcel(p.ParcelID)">Delete</button>
-                </td>
+                <th>Parcel ID</th><th>Customer</th><th>Service</th><th>Centre</th>
+                <th>Route</th><th>Fee</th><th>Status</th><th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var p in FilteredParcels)
+            {
+                <tr>
+                    <td>#@p.ParcelID</td>
+                    <td>@p.Customer?.CustomerName</td>
+                    <td>@p.ServiceType?.ServiceName</td>
+                    <td>@p.DistributionCentre</td>
+                    <td>@p.Origin <i class="bi bi-arrow-right" style="font-size:0.7rem; color:var(--pf-grey-med);"></i> @p.Destination</td>
+                    <td>R@p.DeliveryFee.ToString("N2")</td>
+                    <td><StatusBadge Status="@p.CurrentStatus" /></td>
+                    <td style="text-align:right;">
+                        <button class="action-icon-btn" title="Edit" @onclick="() => EditParcel(p)"><i class="bi bi-pencil"></i></button>
+                        <button class="action-icon-btn danger" title="Delete" @onclick="() => DeleteParcel(p.ParcelID)"><i class="bi bi-trash"></i></button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
 @code {
     private List<Parcel> _parcels = new();
@@ -106,11 +139,18 @@
     private List<DistributionCentre> _centres = new();
     private Parcel _editing = new();
     private bool _showForm;
+    private string _searchTerm = "";
 
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadAll();
-    }
+    private IEnumerable<Parcel> FilteredParcels =>
+        string.IsNullOrWhiteSpace(_searchTerm)
+            ? _parcels
+            : _parcels.Where(p =>
+                p.ParcelID.ToString().Contains(_searchTerm) ||
+                (p.Customer?.CustomerName?.Contains(_searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                p.CurrentStatus.Contains(_searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                p.DistributionCentre.Contains(_searchTerm, StringComparison.OrdinalIgnoreCase));
+
+    protected override async Task OnInitializedAsync() => await LoadAll();
 
     private async Task LoadAll()
     {

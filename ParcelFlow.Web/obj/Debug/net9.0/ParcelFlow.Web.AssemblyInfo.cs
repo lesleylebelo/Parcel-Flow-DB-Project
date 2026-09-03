@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ParcelFlow.Web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5c6a956a5ce753866bf830b292d160e366870fcc")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ad8c9c83909947bff0737faac8c86983b8b1d73e")]
 [assembly: System.Reflection.AssemblyProductAttribute("ParcelFlow.Web")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ParcelFlow.Web")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

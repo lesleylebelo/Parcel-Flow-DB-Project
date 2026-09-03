@@ -143,8 +143,8 @@ C:\Users\Mo\Videos\ParcelFlow-DB-Project\ParcelFlow.Web\obj\Debug\net9.0\rjimswa
 C:\Users\Mo\Videos\ParcelFlow-DB-Project\ParcelFlow.Web\obj\Debug\net9.0\rjsmrazor.dswa.cache.json
 C:\Users\Mo\Videos\ParcelFlow-DB-Project\ParcelFlow.Web\obj\Debug\net9.0\rjsmcshtml.dswa.cache.json
 C:\Users\Mo\Videos\ParcelFlow-DB-Project\ParcelFlow.Web\obj\Debug\net9.0\scopedcss\bundle\ParcelFlow.Web.styles.css
-C:\Users\Mo\Videos\ParcelFlow-DB-Project\ParcelFlow.Web\obj\Debug\net9.0\compressed\uttsdnydig-zh49btep3n.gz
-C:\Users\Mo\Videos\ParcelFlow-DB-Project\ParcelFlow.Web\obj\Debug\net9.0\compressed\bblaefqpfa-763axooce7.gz
+C:\Users\Mo\Videos\ParcelFlow-DB-Project\ParcelFlow.Web\obj\Debug\net9.0\compressed\uttsdnydig-3rqy3089o1.gz
+C:\Users\Mo\Videos\ParcelFlow-DB-Project\ParcelFlow.Web\obj\Debug\net9.0\compressed\bblaefqpfa-7g9vo7w6ha.gz
 C:\Users\Mo\Videos\ParcelFlow-DB-Project\ParcelFlow.Web\obj\Debug\net9.0\staticwebassets.build.json
 C:\Users\Mo\Videos\ParcelFlow-DB-Project\ParcelFlow.Web\obj\Debug\net9.0\staticwebassets.build.json.cache
 C:\Users\Mo\Videos\ParcelFlow-DB-Project\ParcelFlow.Web\obj\Debug\net9.0\staticwebassets.development.json

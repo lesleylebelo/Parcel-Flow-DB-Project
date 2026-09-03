@@ -2,49 +2,93 @@
 @inject DashboardService DashboardSvc
 @inject IJSRuntime JS
 
-<h1>Dashboard</h1>
-<p>Live aggregation queries against the operational data — the same roll-up, drill-down, and slice logic used in <code>sql/08_bi_olap</code>.</p>
+<div class="section">
+    <h1>Operations Dashboard</h1>
+    <p style="color:var(--pf-grey-med);">Live figures from the operational database — updated on every page load.</p>
+</div>
 
-<div class="card-grid">
-    <div class="card">
-        <h3>Revenue by Distribution Centre</h3>
-        <canvas id="revenueByCentreChart" height="200"></canvas>
-    </div>
-    <div class="card">
-        <h3>Delivery Status Breakdown</h3>
-        <canvas id="statusChart" height="200"></canvas>
+<div class="section">
+    <div class="card-grid">
+        <div class="card kpi-card">
+            <div>
+                <div class="kpi-value">@_totalParcels</div>
+                <div class="kpi-label">Total Parcels</div>
+            </div>
+            <div class="kpi-icon total"><i class="bi bi-box2"></i></div>
+        </div>
+        <div class="card kpi-card">
+            <div>
+                <div class="kpi-value">@CountFor("In Transit")</div>
+                <div class="kpi-label">In Transit</div>
+            </div>
+            <div class="kpi-icon transit"><i class="bi bi-truck"></i></div>
+        </div>
+        <div class="card kpi-card">
+            <div>
+                <div class="kpi-value">@CountFor("Delivered")</div>
+                <div class="kpi-label">Delivered</div>
+            </div>
+            <div class="kpi-icon delivered"><i class="bi bi-check-circle"></i></div>
+        </div>
+        <div class="card kpi-card">
+            <div>
+                <div class="kpi-value">@CountFor("Delayed")</div>
+                <div class="kpi-label">Delayed</div>
+            </div>
+            <div class="kpi-icon delayed"><i class="bi bi-exclamation-triangle"></i></div>
+        </div>
     </div>
 </div>
 
-<div class="card" style="margin-top:16px;">
-    <h3>Revenue by Centre and Service Type</h3>
-    <table>
-        <thead><tr><th>Centre</th><th>Service</th><th># Parcels</th><th>Revenue</th></tr></thead>
-        <tbody>
-            @foreach (var row in _centreServiceRevenue)
-            {
-                <tr>
-                    <td>@row.CentreName</td>
-                    <td>@row.ServiceName</td>
-                    <td>@row.NumberOfParcels</td>
-                    <td>R@row.TotalRevenue.ToString("N2")</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+<div class="section">
+    <div class="card-grid" style="grid-template-columns: 2fr 1fr;">
+        <div class="card">
+            <h3>Revenue by Distribution Centre</h3>
+            <canvas id="revenueByCentreChart" height="180"></canvas>
+        </div>
+        <div class="card">
+            <h3>Status Breakdown</h3>
+            <canvas id="statusChart" height="180"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <h2 class="section-heading">Revenue by Centre and Service Type</h2>
+    <div class="table-card">
+        <table>
+            <thead><tr><th>Centre</th><th>Service</th><th># Parcels</th><th>Revenue</th></tr></thead>
+            <tbody>
+                @foreach (var row in _centreServiceRevenue)
+                {
+                    <tr>
+                        <td>@row.CentreName</td>
+                        <td>@row.ServiceName</td>
+                        <td>@row.NumberOfParcels</td>
+                        <td>R@row.TotalRevenue.ToString("N2")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 
 @code {
     private List<CentreRevenue> _centreRevenue = new();
     private List<CentreServiceRevenue> _centreServiceRevenue = new();
     private List<StatusBreakdown> _statusBreakdown = new();
+    private int _totalParcels;
 
     protected override async Task OnInitializedAsync()
     {
         _centreRevenue = await DashboardSvc.GetRevenueByCentreAsync();
         _centreServiceRevenue = await DashboardSvc.GetRevenueByCentreAndServiceAsync();
         _statusBreakdown = await DashboardSvc.GetStatusBreakdownAsync();
+        _totalParcels = _statusBreakdown.Sum(s => s.Count);
     }
+
+    private int CountFor(string status) =>
+        _statusBreakdown.FirstOrDefault(s => s.Status == status)?.Count ?? 0;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

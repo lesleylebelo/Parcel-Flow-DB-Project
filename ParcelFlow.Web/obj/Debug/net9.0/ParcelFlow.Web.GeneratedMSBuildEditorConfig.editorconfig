@@ -52,8 +52,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVHJhY2sucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Mo/Videos/ParcelFlow-DB-Project/ParcelFlow.Web/Shared/LandingLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXExhbmRpbmdMYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Mo/Videos/ParcelFlow-DB-Project/ParcelFlow.Web/Shared/MainLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Mo/Videos/ParcelFlow-DB-Project/ParcelFlow.Web/Shared/StatusBadge.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFN0YXR1c0JhZGdlLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Mo/Videos/ParcelFlow-DB-Project/ParcelFlow.Web/_Imports.razor]

@@ -1,52 +1,70 @@
 @page "/track"
 @inject ParcelService ParcelSvc
 
-<h1>Track a Parcel</h1>
+<div class="section">
+    <h1>Track a Parcel</h1>
+    <p style="color:var(--pf-grey-med); margin:0;">Enter a parcel ID to see its current status and full delivery history.</p>
+</div>
 
-<div>
-    <input type="number" @bind="_searchId" placeholder="Enter Parcel ID (e.g. 1050)" />
-    <button @onclick="Search">Search</button>
+<div class="card section" style="max-width:480px;">
+    <div class="search-input">
+        <i class="bi bi-hash"></i>
+        <input type="number" @bind="_searchId" placeholder="e.g. 1050" />
+    </div>
+    <button class="btn btn-primary" style="margin-top:10px; width:100%; justify-content:center;" @onclick="Search">
+        <i class="bi bi-search"></i> Track Parcel
+    </button>
 </div>
 
 @if (_searched && _parcel == null)
 {
-    <p style="color:#b42318; margin-top:12px;">No parcel found with ID @_searchId.</p>
+    <div class="card" style="border-left:3px solid var(--pf-status-delayed);">
+        <i class="bi bi-exclamation-circle" style="color:var(--pf-status-delayed);"></i>
+        No parcel found with ID <strong>#@_searchId</strong>.
+    </div>
 }
 
 @if (_parcel != null)
 {
-    <div class="card" style="margin-top:16px;">
-        <h3>Parcel #@_parcel.ParcelID</h3>
-        <p><strong>Customer:</strong> @_parcel.Customer?.CustomerName</p>
-        <p><strong>Service:</strong> @_parcel.ServiceType?.ServiceName</p>
-        <p><strong>Route:</strong> @_parcel.Origin → @_parcel.Destination</p>
-        <p><strong>Distribution Centre:</strong> @_parcel.DistributionCentre</p>
-        <p><strong>Dispatched:</strong> @_parcel.DispatchDate.ToString("dd MMM yyyy")</p>
-        <p>
-            <strong>Status:</strong>
-            <span class="status-@(_parcel.CurrentStatus.Replace(" ", ""))">@_parcel.CurrentStatus</span>
-        </p>
-
-        <h4>Status History</h4>
-        @if (_history.Count == 0)
-        {
-            <p><em>No history recorded yet.</em></p>
-        }
-        else
-        {
-            <table>
-                <thead><tr><th>Status</th><th>Changed At</th></tr></thead>
+    <div class="card-grid" style="grid-template-columns: 1.4fr 1fr;">
+        <div class="card">
+            <div class="form-section-title">Shipment Information</div>
+            <table style="font-size:0.85rem;">
                 <tbody>
-                    @foreach (var h in _history)
-                    {
-                        <tr>
-                            <td>@h.Status</td>
-                            <td>@h.ChangedAt.ToString("dd MMM yyyy HH:mm")</td>
-                        </tr>
-                    }
+                    <tr><td style="color:var(--pf-grey-med); width:40%;">Parcel ID</td><td><strong>#@_parcel.ParcelID</strong></td></tr>
+                    <tr><td style="color:var(--pf-grey-med);">Customer</td><td>@_parcel.Customer?.CustomerName</td></tr>
+                    <tr><td style="color:var(--pf-grey-med);">Service</td><td>@_parcel.ServiceType?.ServiceName</td></tr>
+                    <tr><td style="color:var(--pf-grey-med);">Origin</td><td>@_parcel.Origin</td></tr>
+                    <tr><td style="color:var(--pf-grey-med);">Destination</td><td>@_parcel.Destination</td></tr>
+                    <tr><td style="color:var(--pf-grey-med);">Distribution Centre</td><td>@_parcel.DistributionCentre</td></tr>
+                    <tr><td style="color:var(--pf-grey-med);">Dispatched</td><td>@_parcel.DispatchDate.ToString("dd MMM yyyy")</td></tr>
                 </tbody>
             </table>
-        }
+        </div>
+
+        <div class="card">
+            <div class="form-section-title">Delivery Status</div>
+            <div style="margin-bottom:16px;"><StatusBadge Status="@_parcel.CurrentStatus" /></div>
+
+            <div class="form-section-title">Tracking Timeline</div>
+            @if (_history.Count == 0)
+            {
+                <p style="color:var(--pf-grey-med); font-size:0.85rem;"><em>No status changes recorded yet.</em></p>
+            }
+            else
+            {
+                <ul class="timeline">
+                    @for (int i = 0; i < _history.Count; i++)
+                    {
+                        var h = _history[i];
+                        <li class="timeline-item @(i == _history.Count - 1 ? "done" : "")">
+                            <div class="timeline-status">@h.Status</div>
+                            <div class="timeline-date">@h.ChangedAt.ToString("dd MMM yyyy, HH:mm")</div>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
     </div>
 }
 
